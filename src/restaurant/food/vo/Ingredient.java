@@ -12,8 +12,6 @@ import restaurant.refrigerator.dao.RestaurantRefrigeratorDaoImpl;
 
 public class Ingredient implements Serializable{
 	
-	private static final long serialVersionUID = 4896343328864682183L;
-	private static int cnt = 1;
 	private int idx;
 	private String name;
     private int amount;
@@ -22,8 +20,6 @@ public class Ingredient implements Serializable{
 
    
 	public Ingredient(String name, int amount, int price, LocalDate due) {
-//		this.idx = cnt++; 변경
-		this.idx = RestaurantRefrigeratorDaoImpl.getIng().size()+1;//인덱스 추가
 		this.name = name;
 		this.amount = amount;
 		this.price = price;

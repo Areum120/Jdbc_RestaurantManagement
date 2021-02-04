@@ -215,7 +215,7 @@ public class Menu {
 					refrigerator_Service.getAllIng();
 					break;
 				case 6:
-					restaurant.refrigerator.dao.RestaurantRefrigeratorDaoImpl.getInstance().stop();
+//					restaurant.refrigerator.dao.RestaurantRefrigeratorDaoImpl.getInstance().stop();
 					flag=false;
 					break;
 			}

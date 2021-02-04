@@ -13,7 +13,6 @@ import restaurant.supplier.dao.SupplyDaoImpl;
 
 public class RefrigeratorServiceImpl implements RefrigeratorService {
 
-	
 		private RestaurantRefrigeratorDaoImpl rRDao;
 		private SupplyDaoImpl sRDao;
 		private ArrayList<Ingredient> supplyIngredients;
@@ -22,7 +21,7 @@ public class RefrigeratorServiceImpl implements RefrigeratorService {
 			
 	public RefrigeratorServiceImpl() {
 		
-		rRDao = restaurant.refrigerator.dao.RestaurantRefrigeratorDaoImpl.getInstance(); //싱글톤 객체를 받아온다
+//		rRDao = restaurant.refrigerator.dao.RestaurantRefrigeratorDaoImpl.getInstance(); //싱글톤 객체를 받아온다
 		this.supplyIngredients = supplyIngredients;
 		sRDao = restaurant.supplier.dao.SupplyDaoImpl.getInstance();
 		fDao = restaurant.finance.dao.FinanceDaoImpl.getInstance();

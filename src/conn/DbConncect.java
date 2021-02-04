@@ -4,12 +4,12 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import board.conn.DbConnect;
 
 public class DbConncect {
+
+	private static DbConncect db = new DbConncect();
 	
-private static DbConnect db = new DbConnect();
-	
+
 	private String driver = "oracle.jdbc.driver.OracleDriver";//오라클 용 드라이버 명
 	private String url = "jdbc:oracle:thin:@localhost:1521:xe";//로그인에 필요한 서버 주소 및 sid
 
@@ -17,7 +17,7 @@ private static DbConnect db = new DbConnect();
 	private void DbConnect() {
 	}
 
-	public static DbConnect getInstance() {
+	public static DbConncect getInstance(){
 		return db;
 	}
 
@@ -25,7 +25,7 @@ private static DbConnect db = new DbConnect();
 		Connection conn = null;
 		try {
 			Class.forName(driver);//드라이버 로드
-			conn = DriverManager.getConnection(url, "hr", "xhfl120");//db서버에 접속
+			conn = DriverManager.getConnection(url, "hr", "12345678");//db서버에 접속
 			System.out.println("오라클 연결 성공");
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -38,6 +38,9 @@ private static DbConnect db = new DbConnect();
 		}
 		return conn;
 	}
-	
 
+	public static void main(String[] args) {
+		DbConncect dbConncect = new DbConncect();
+		dbConncect.conn();
+	}
 }

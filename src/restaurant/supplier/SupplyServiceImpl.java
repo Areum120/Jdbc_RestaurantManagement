@@ -29,8 +29,8 @@ public class SupplyServiceImpl implements SupplyService {
 	public SupplyServiceImpl() {
 		sdao = restaurant.supplier.dao.SupplyDaoImpl.getInstance();
 		refService = new RefrigeratorServiceImpl();
-		rRDao = restaurant.refrigerator.dao.RestaurantRefrigeratorDaoImpl.getInstance();
-		fDao = restaurant.finance.dao.FinanceDaoImpl.getInstance();
+//		rRDao = restaurant.refrigerator.dao.RestaurantRefrigeratorDaoImpl.getInstance();
+//		fDao = restaurant.finance.dao.FinanceDaoImpl.getInstance();
 	}
 
 	@Override

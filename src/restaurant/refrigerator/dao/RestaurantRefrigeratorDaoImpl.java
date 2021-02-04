@@ -7,22 +7,17 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-//import java.io.File;
-//import java.io.FileInputStream;
-//import java.io.FileNotFoundException;
-//import java.io.FileOutputStream;
-//import java.io.IOException;
-//import java.io.ObjectInputStream;
-//import java.io.ObjectOutputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-import board.conn.DbConnect;
+import conn.DbConncect;
 import restaurant.food.vo.Ingredient;
 
+import javax.naming.InsufficientResourcesException;
+
 public class RestaurantRefrigeratorDaoImpl implements RefrigeratorDao {
-	
-	private DbConnect db;
+
+	private DbConncect db;
 
 	public static final String FILE_PATH = "src/restaurant/files/restaurant_ingredients.dat";
 	private static final String MONEY_FILE_PATH = "src/restaurant/files/total_money.dat";	
@@ -34,45 +29,19 @@ public class RestaurantRefrigeratorDaoImpl implements RefrigeratorDao {
 	
 	private RestaurantRefrigeratorDaoImpl() {
 		
-		db = DbConnect.getInstance();
-		ingredients = new ArrayList<Ingredient>(); 
+		this.db = db.getInstance();
+		ingredients = new ArrayList<Ingredient>();
 //		File rf = new File(FILE_PATH);
 //		boolean isExists = rf.exists();
 //		if(isExists)
-//			start();
 	}
-	
-//	public static RestaurantRefrigeratorDaoImpl getInstance() {
-//		return RestaurantRefrigeratordaoImpl;
-//	}
-	
-	
-//	public void start() {
-//		try {
-//			FileInputStream fi = new FileInputStream(FILE_PATH);
-//			ObjectInputStream oi = new ObjectInputStream(fi);
-//			//unchecked warning 뜸
-//			ingredients = (ArrayList<Ingredient>) oi.readObject();
-//			oi.close();
-//			fi.close();
-//		} catch (FileNotFoundException e) {
-//			System.out.println("restaurant.refrigerator DaoImpl start() Error: 초기화 파일을 불러오지 못했습니다.");
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			System.out.println("restaurant.refrigerator DaoImpl start() Error: 초기화 파일을 불러오지 못했습니다.");
-//			e.printStackTrace();
-//		} catch (ClassNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//	}
 	
 
 	@Override
 	public void addIng(Ingredient ing) {
 		// TODO Auto-generated method stub
 		Connection conn = db.conn(); // db 연결
-		String sql = "insert into board values(seq_sup.nextval,1,'김',10,100,sysdate+3)";
+		String sql = "insert into restaurant_ingredients values(?, ?, ?, ?, sysdate+3)";
 		
 		int cnt = 0;
 		try {
@@ -81,7 +50,7 @@ public class RestaurantRefrigeratorDaoImpl implements RefrigeratorDao {
 			pstmt.setString(2, ing.getName());
 			pstmt.setInt(3, ing.getAmount());
 			pstmt.setInt(4, ing.getPrice());
-			pstmt.setDate(5, LocalDate ());//날짜
+//			pstmt.setObject(5, ing.getDue());//날짜
 
 			cnt = pstmt.executeUpdate();
 			System.out.println(cnt + "줄 insert 됨");
@@ -90,6 +59,7 @@ public class RestaurantRefrigeratorDaoImpl implements RefrigeratorDao {
 			e.printStackTrace();
 		} finally {
 			try {
+
 				conn.close();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
@@ -125,8 +95,8 @@ public class RestaurantRefrigeratorDaoImpl implements RefrigeratorDao {
 			PreparedStatement pstmt = conn.prepareStatement(sql);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				Ingredient ing = new Ingredient(rs.getInt(1), rs.getString(2), rs.getInt(3), rs.getInt(4), rs.getDate(5));
-				ingredients.add(ing);
+//				Ingredient ing = new Ingredient(rs.getInt(1), rs.getString(2), rs.getInt(3), rs.getInt(4), rs.getDate(5));
+//				ingredients.add(ing);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -223,42 +193,42 @@ public class RestaurantRefrigeratorDaoImpl implements RefrigeratorDao {
 				stop();
 			}
 
-
-
-	
-public void stop() {
-	try {
-		FileOutputStream fo = new FileOutputStream(FILE_PATH);
-		ObjectOutputStream oo = new ObjectOutputStream(fo);
-		oo.writeObject(ingredients);
-		oo.close();
-		fo.close();
+	public void stop() {
+		try {
+			FileOutputStream fo = new FileOutputStream(FILE_PATH);
+			ObjectOutputStream oo = new ObjectOutputStream(fo);
+			oo.writeObject(ingredients);
+			oo.close();
+			fo.close();
+			}
+		catch (IOException e) {
+			System.out.println("restaurant.refrigerator DaoImpl stop() Error: 파일을 저장하지 못했습니다.");
+			e.printStackTrace();
 		}
-	catch (IOException e) {
-		System.out.println("restaurant.refrigerator DaoImpl stop() Error: 파일을 저장하지 못했습니다.");
-		e.printStackTrace();
+	}
+
+
+	public Ingredient searchByIdx(int idx) {
+		Ingredient in = selectAllIng().get(idx-1);
+		if (in == null) {
+			System.out.println("음식이 존재하지 않습니다.");
+			return null;
+		}else {
+			return in;
+		}
+	}
+
+	@Override
+	public void deleteByName(String name) {
+		// TODO Auto-generated method stub
+
+	}
+
+
+	public static void main(String[] args) {
+		RefrigeratorDao refrigeratorDao = new RestaurantRefrigeratorDaoImpl();
+		Ingredient ingredient = new Ingredient("면사리", 10, 1000, LocalDate.now().plusDays(3));
+		ingredient.setIdx(7);
+		refrigeratorDao.addIng(ingredient);
 	}
 }
-
-
-public Ingredient searchByIdx(int idx) {
-	Ingredient in = selectAllIng().get(idx-1);
-	if (in == null) {
-		System.out.println("음식이 존재하지 않습니다.");
-		return null;
-	}else {
-		return in;	
-	}
-}
-
-@Override
-public void deleteByName(String name) {
-	// TODO Auto-generated method stub
-	
-}
-
-
-}
-	
-	
-

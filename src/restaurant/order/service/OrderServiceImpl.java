@@ -37,7 +37,7 @@ public class OrderServiceImpl implements OrderService{
 		dao=new OrderDAOImpl();
 		foodDao=new FoodDaoImpl();
 		financeDao = restaurant.finance.dao.FinanceDaoImpl.getInstance();
-		RfDao = restaurant.refrigerator.dao.RestaurantRefrigeratorDaoImpl.getInstance(); 
+//		RfDao = restaurant.refrigerator.dao.RestaurantRefrigeratorDaoImpl.getInstance();
 	}
 	
 	/*
