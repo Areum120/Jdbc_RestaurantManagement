@@ -130,7 +130,31 @@ public class RestaurantRefrigeratorDaoImpl implements RefrigeratorDao {
 
 	@Override
 	public void updateDue(String name, LocalDate Date) {
+		Connection conn = db.conn();
+
 		// 유통기한 수정
+		String sql = "update restaurant_ingredients\n" +
+				"set due = sysdate + 3\n" +
+				"where due < sysdate";
+		System.out.println(sql);
+		try {
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			//pstmt.setDate(1, java.sql.Date.valueOf(LocalDate.now()));
+
+			int r = pstmt.executeUpdate();
+			System.out.println(r);
+			pstmt.close();
+
+		} catch (Exception e) {
+			System.out.println("update fail");
+		} finally {
+			try {
+				conn.close();
+			} catch (SQLException throwables) {
+				throwables.printStackTrace();
+			}
+		}
+
 
 	}
 
@@ -191,6 +215,8 @@ public class RestaurantRefrigeratorDaoImpl implements RefrigeratorDao {
 //		ingredient.setIdx(7);
 //		refrigeratorDao.addIng(ingredient);
 
-		refrigeratorDao.searchByName("면사리");
+//		refrigeratorDao.searchByName("면사리");
+
+		refrigeratorDao.updateDue("", LocalDate.now());
 	}
 }
