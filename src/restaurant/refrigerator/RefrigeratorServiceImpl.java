@@ -218,12 +218,7 @@ public class RefrigeratorServiceImpl implements RefrigeratorService {
 	}
 
 
-	
 
-	public void stop() {
-		rRDao.stop();
-		}
-	
 
 	/*
 	 * 유효성체크

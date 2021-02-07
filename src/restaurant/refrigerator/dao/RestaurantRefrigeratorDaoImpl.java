@@ -19,18 +19,12 @@ public class RestaurantRefrigeratorDaoImpl implements RefrigeratorDao {
 
 	private DbConncect db;
 
-	public static final String FILE_PATH = "src/restaurant/files/restaurant_ingredients.dat";
-	private static final String MONEY_FILE_PATH = "src/restaurant/files/total_money.dat";	
-	
-	
-	private static ArrayList<Ingredient> ingredients; //수정
-	
+
 	private static RestaurantRefrigeratorDaoImpl RestaurantRefrigeratordaoImpl = new RestaurantRefrigeratorDaoImpl();
 	
 	private RestaurantRefrigeratorDaoImpl() {
 		
 		this.db = db.getInstance();
-		ingredients = new ArrayList<Ingredient>();
 //		File rf = new File(FILE_PATH);
 //		boolean isExists = rf.exists();
 //		if(isExists)
@@ -77,7 +71,9 @@ public class RestaurantRefrigeratorDaoImpl implements RefrigeratorDao {
 //	public static ArrayList<Ingredient> getIng(){
 //		return ingredients;
 	}
-	
+
+
+
 	@Override
 	public ArrayList<Ingredient> searchByName(String name) {
 		/*
@@ -88,13 +84,23 @@ public class RestaurantRefrigeratorDaoImpl implements RefrigeratorDao {
 //      식자재 검색 및 확인
 		
 		ResultSet rs = null;
-		String sql = "select * from board order by idx";
+		String sql = "select idx name, amount, price, due from restaurant_ingredients where name=?";
 		Connection conn = db.conn();
 
 		try {
 			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, name);
+
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
+				int idx = rs.getInt(1);
+				String name1 = rs.getString(2);
+//				int amount = rs.getInt(3);
+//				int price = rs.getInt(4);
+//				LocalDate due = rs.getObject(5, LocalDate.class);
+
+				System.out.println("idx" + idx);
+				System.out.println("name1" + name1);
 //				Ingredient ing = new Ingredient(rs.getInt(1), rs.getString(2), rs.getInt(3), rs.getInt(4), rs.getDate(5));
 //				ingredients.add(ing);
 			}
@@ -125,32 +131,13 @@ public class RestaurantRefrigeratorDaoImpl implements RefrigeratorDao {
 	@Override
 	public void updateDue(String name, LocalDate Date) {
 		// 유통기한 수정
-		for (Ingredient ingredient : this.ingredients) {
-			if (name.equals(ingredient.getName())) {
-				ingredient.setDue(Date);
-				
-//				1일이 지날수록 유통기한 변경은?
-//				default가 2100-01-01
-			}
-		}
-		stop();
-		
+
 	}
 
 	@Override
 	public void updateAmount(String name, int amount) {
 		// TODO Auto-generated method stub
 //		식자재 수량 수정, 입고+출고 (출고는 -)
-		for (Ingredient ingredient : this.ingredients) {
-			if (name.equals(ingredient.getName())) {
-				ingredient.setAmount((ingredient.getAmount()+amount));//ame으로 찾아서 amount 수정
-			} 
-/*			식자재 amount 1회 구매량 갯수 
-			김:30. 단무지:10, 쌀:50, 햄:10, 계란:20, 면사리:20, 어묵:10, 대파:10, 쑥갓:5, 유부:10
-			떡 : 20, 치즈:5, 돼지고기:10, 밀가루:10, 빵가루:10, 김치:10
-*/			
-		}
-		stop();
 	}
 
 
@@ -160,7 +147,7 @@ public class RestaurantRefrigeratorDaoImpl implements RefrigeratorDao {
 	public ArrayList<Ingredient> selectAllIng() {
 		// TODO Auto-generated method stub
 //		식자재 목록 확인
-		return ingredients;
+		return new ArrayList<>();
 	}
 
 
@@ -173,40 +160,13 @@ public class RestaurantRefrigeratorDaoImpl implements RefrigeratorDao {
 				ingredients.remove(i);
 			}//추가
 			*/
-			Ingredient in = searchByIdx(idx);
-			if (in != null ) {
-				ingredients.remove(in);
-				System.out.println("식자재 폐기 완료하였습니다.");
-				for(int j=idx-1; j<ingredients.size(); j++) {
-					if(j==0) {
-						for(int k=0; k<ingredients.size(); k++) {
-							ingredients.get(k).setIdx(k+1);
-						}
-						break;
-					}else {
-						ingredients.get(j).setIdx(j+1);
-					}//추가
-				}	
-			}else {
-				System.out.println("없는 번호입니다. 다시 확인해주세요");
-			}
-				stop();
-			}
-
-	public void stop() {
-		try {
-			FileOutputStream fo = new FileOutputStream(FILE_PATH);
-			ObjectOutputStream oo = new ObjectOutputStream(fo);
-			oo.writeObject(ingredients);
-			oo.close();
-			fo.close();
-			}
-		catch (IOException e) {
-			System.out.println("restaurant.refrigerator DaoImpl stop() Error: 파일을 저장하지 못했습니다.");
-			e.printStackTrace();
+		Ingredient in = searchByIdx(idx);
+		if (in != null) {
+			System.out.println("식자재 폐기 완료하였습니다.");
+		} else {
+			System.out.println("없는 번호입니다. 다시 확인해주세요");
 		}
 	}
-
 
 	public Ingredient searchByIdx(int idx) {
 		Ingredient in = selectAllIng().get(idx-1);
@@ -227,8 +187,10 @@ public class RestaurantRefrigeratorDaoImpl implements RefrigeratorDao {
 
 	public static void main(String[] args) {
 		RefrigeratorDao refrigeratorDao = new RestaurantRefrigeratorDaoImpl();
-		Ingredient ingredient = new Ingredient("면사리", 10, 1000, LocalDate.now().plusDays(3));
-		ingredient.setIdx(7);
-		refrigeratorDao.addIng(ingredient);
+//		Ingredient ingredient = new Ingredient("면사리", 10, 1000, LocalDate.now().plusDays(3));
+//		ingredient.setIdx(7);
+//		refrigeratorDao.addIng(ingredient);
+
+		refrigeratorDao.searchByName("면사리");
 	}
 }
